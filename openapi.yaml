@@ -1,10 +1,14 @@
 openapi: 3.0.3
 info:
-  title: MetaSV OpenAPI Spec
+  title: MetaSV API Spec
   description: API definition for MetaSV provided apis
   version: 2.0.0
+  license:
+    name: Open BSV License version 3
+    url: https://github.com/bitcoin-sv/bitcoin-sv/blob/master/LICENSE
   contact:
     email: heqiming@metasv.com
+    name: MetaSV team
 
 servers:
   - url: 'https://apiv2.metasv.com'
@@ -15,8 +19,8 @@ tags:
     description: transaction related apis
   - name: address
     description: address related apis
-  - name: output
-    description: output spent status apis
+  - name: outpoint
+    description: output spent status (outpoint of vin) apis
   - name: merchant
     description: merchant apis
 
@@ -99,7 +103,8 @@ paths:
       get:
         tags:
           - tx
-        summary: Get transaction detail by specific txid.
+        summary: Get transaction detail by specific txid. Use '/vin/{txid}' to get detailed input info including address and value.
+        description: This api is parsed from raw hex, you can use /tx/{txid}/raw to parse tx by yourself, If you want detail input info, use '/vin/{txid}' to get detailed input info including address and value.
         parameters:
           - name: txid
             in: path
@@ -139,19 +144,12 @@ paths:
         '404':
           description: Transaction not found
 
-  '/tx/{txid}/broadcast':
+  '/tx/broadcast':
     post:
       tags:
         - tx
       summary: Broadcast tx to metasv fullnode.
       description: This api will broadcast to metasv fullnode directly, If you want to use merchant api, see /merchant/boardcast.
-      parameters:
-        - name: txid
-          in: path
-          description: the request ID to search, txhash
-          required: true
-          schema:
-            type: string
       requestBody:
         content:
           application/json:
@@ -249,6 +247,58 @@ paths:
                 maxItems: 30
                 items:
                   $ref: '#/components/schemas/AddressTx'
+
+  '/outpoint/{txid}/{index}':
+    get:
+      tags:
+        - outpoint
+      summary: Get tx output(outpoint for vin) spent status.
+      description: Get detailed info for a utxo(or txo if spent), Only outputs spent no longer than one month are available. (Premium feature will support full history)
+      parameters:
+        - name: txid
+          in: path
+          description: The txid of the output
+          required: true
+          schema:
+            type: string
+        - name: index
+          in: path
+          description: The index of the output in the tx.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get outpoint success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutputInfo'
+
+  '/vin/{txid}':
+    get:
+      tags:
+        - outpoint
+        - tx
+      summary: Get all output point of vins in the tx(no longer than one month).
+      description: Search output points by spent txid. Use this api to get detailed inputs for the tx. (Premium feature will support full history)
+      parameters:
+        - name: txid
+          in: path
+          description: The txid of the vins
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Get vin list success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutputInfo'
 
 components:
   schemas:
@@ -493,6 +543,34 @@ components:
           type: string
           description: txid of this record
 
+    OutputInfo:
+      description: spent status and value info of the output.
+      type: object
+      properties:
+        txid:
+          description: txid that this output is in.
+          type: string
+        index:
+          description: index of this output in the tx.
+          type: integer
+        address:
+          description: parsed address of this output, empty for non standard.
+          type: string
+        value:
+          description: value of this output
+          type: integer
+          format: int64
+        spent:
+          description: this output is spent or not, true if spent
+          type: boolean
+        spentTxid:
+          description: txid that spent this output
+          type: string
+        spentIndex:
+          description: vin index of the spent tx
+          type: integer
+        spentHeight:
+          description: height of the spent tx(-1 if unconfirmed, 0 if unspent)
 
     # todo support super address detail
 #    AddressDetail:
@@ -545,6 +623,7 @@ components:
 #          type: integer
 #          format: int64
 #          description: total outcome value
+
 
   requestBodies:
     BigdataQueryRequest:
