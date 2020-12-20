@@ -279,11 +279,11 @@ components:
         txDetail:
           $ref: '#/components/schemas/BlockTx'
         inputs:
-          type: list
+          type: array
           items:
             $ref: '#/components/schemas/TxInput'
         outputs:
-          type: list
+          type: array
           items:
             $ref: '#/components/schemas/TxOutput'
     TxInput:
