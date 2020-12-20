@@ -11,16 +11,12 @@ servers:
 tags:
   - name: block
     description: block related apis
-
   - name: tx
     description: transaction related apis
-
   - name: address
     description: address related apis
-
   - name: output
     description: output spent status apis
-
   - name: merchant
     description: merchant apis
 
@@ -46,34 +42,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/BlockHeader'
-#    post:
-#      tags:
-#        - bigdataQueryRequest
-#      summary: create new query request
-#      requestBody:
-#        content:
-#          application/json:
-#            schema:
-#              type: object
-#              properties:
-#                scenarioName:
-#                  description: scenario defines how to process the request
-#                  type: string
-#                param:
-#                  description: The json format params passed to the query
-#                  type: string
-#                  default: '{}'
-#
-#      responses:
-#        '201':
-#          description: query created, return created record
-#          content:
-#            application/json:
-#              schema:
-#                $ref: '#/components/schemas/BigdataQueryRequest'
-#
-#        '400':
-#          description: invalid parameter
 
   '/block/{blockId}':
     get:
@@ -126,42 +94,19 @@ paths:
         '404':
           description: block not found
 
-  '/tx/{txid}':
-      get:
-        tags:
-          - tx
-        summary: Get transaction detail by specific txid.
-        responses:
-          '200':
-            description: Get transaction detail success.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/TxDetail'
-          '404':
-            description: Transaction not found
-
-  '/tx/{txid}/raw':
-    get:
-      tags:
-        - tx
-      summary: Get transaction raw hex by specific txid.
-      responses:
-        '200':
-          description: Get transaction raw hex success.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TxRaw'
-        '404':
-          description: Transaction not found
-
   '/tx/{txid}/broadcast':
     post:
       tags:
         - tx
       summary: Broadcast tx to metasv fullnode.
       description: This api will broadcast to metasv fullnode directly, If you want to use merchant api, see /merchant/boardcast.
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -180,6 +125,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BroadcastResult'
+
+
+  '/tx/{txid}':
+      get:
+        tags:
+          - tx
+        summary: Get transaction detail by specific txid.
+        parameters:
+          - name: txid
+            in: path
+            description: the request ID to search, txhash
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Get transaction detail success.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TxDetail'
+          '404':
+            description: Transaction not found
+
+  '/tx/{txid}/raw':
+    get:
+      tags:
+        - tx
+      summary: Get transaction raw hex by specific txid.
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get transaction raw hex success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxRaw'
+        '404':
+          description: Transaction not found
+
+
 
 
 components:
