@@ -94,39 +94,6 @@ paths:
         '404':
           description: block not found
 
-  '/tx/{txid}/broadcast':
-    post:
-      tags:
-        - tx
-      summary: Broadcast tx to metasv fullnode.
-      description: This api will broadcast to metasv fullnode directly, If you want to use merchant api, see /merchant/boardcast.
-      parameters:
-        - name: txid
-          in: path
-          description: the request ID to search, txhash
-          required: true
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TxRaw'
-      responses:
-        '201':
-          description: Broadcast success, txid returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BroadcastResult'
-        '403':
-          description: Broadcast Failed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BroadcastResult'
-
-
   '/tx/{txid}':
       get:
         tags:
@@ -171,8 +138,37 @@ paths:
         '404':
           description: Transaction not found
 
-
-
+  '/tx/{txid}/broadcast':
+    post:
+      tags:
+        - tx
+      summary: Broadcast tx to metasv fullnode.
+      description: This api will broadcast to metasv fullnode directly, If you want to use merchant api, see /merchant/boardcast.
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxRaw'
+      responses:
+        '201':
+          description: Broadcast success, txid returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResult'
+        '403':
+          description: Broadcast Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResult'
 
 components:
   schemas:
