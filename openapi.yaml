@@ -40,6 +40,7 @@ paths:
             application/json:
               schema:
                 type: array
+                maxItems: 100
                 items:
                   $ref: '#/components/schemas/BlockHeader'
 
@@ -79,7 +80,7 @@ paths:
           schema:
             type: string
         - in: query
-          name: last
+          name: flag
           required: false
           description: paging flag, blockIndex of last item returned last page.
           schema:
@@ -169,6 +170,85 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BroadcastResult'
+
+  '/address/{address}/balance':
+    get:
+      tags:
+        - address
+      summary: Get address balance by specific address.
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get address detail success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressBalance'
+
+  '/address/{address}/utxo':
+    get:
+      tags:
+        - address
+      summary: Get address utxos by specific address(100 per page).
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get address utxos success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/AddressUtxo'
+
+  '/address/{address}/tx':
+    get:
+      tags:
+        - address
+      summary: Get address history by specific address(Only recent 3 months available, Use super address apis if you need more history).
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last flag of the last query record(Paging flag)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get address transactions success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 30
+                items:
+                  $ref: '#/components/schemas/AddressTx'
 
 components:
   schemas:
@@ -337,7 +417,134 @@ components:
           description: return messages if broadcast failed
           type: string
 
+    AddressBalance:
+      type: object
+      description: The current balance for a particular address
+      properties:
+        address:
+          description: current address
+          type: string
+        confirmed:
+          description: confirmed balance
+          type: integer
+          format: int64
+        unconfirmed:
+          description: unconfirmed balance
+          type: integer
+          format: int64
 
+    AddressUtxo:
+      type: object
+      description: Utxos by address(or addresses) order by height asc.
+      properties:
+        flag:
+          type: integer
+          format: int64
+          description: paging flag
+        address:
+          type: string
+          description: Address of the utxo
+        txid:
+          type: string
+          description: txid of the utxo
+        outIndex:
+          type: integer
+          description: output index in the tx
+        value:
+          type: integer
+          format: int64
+          description: Value of the utxo
+        height:
+          type: integer
+          description: Height of the utxo, -1 if not confirmed
+        ancestors:
+          type: integer
+          description: Unconfirmed ancestors of the utxo(ancestors + decendents < 50)
+        decendents:
+          type: integer
+          description: Unconfirmed decendents of the utxo(ancestors + decendents < 50)
+
+    AddressTx:
+      type: object
+      description: Transaction history of the address.
+      properties:
+        flag:
+          type: string
+          description: Paging flag
+        address:
+          type: string
+          description: The address of the record
+        time:
+          type: integer
+          format: int64
+          description: timestamp of the tx
+        height:
+          type: integer
+          description: Block Height of the tx, -1 if not confirmed
+        income:
+          type: integer
+          format: int64
+          description: total income of the address from this tx
+        outcome:
+          type: integer
+          format: int64
+          description: total outcome of the address from this tx
+        txid:
+          type: string
+          description: txid of this record
+
+
+    # todo support super address detail
+#    AddressDetail:
+#      type: object
+#      description: Current detail for typical address(register address required).
+#      properties:
+#        address:
+#          type: string
+#          description: current address
+#        confirmedBalance:
+#          type: integer
+#          format: int64
+#          description: total confirmed balance
+#        firstSpentTime:
+#          type: integer
+#          format: int64
+#          description: first spent timestamp
+#        firstSpentHeight:
+#          type: integer
+#          description: first spent height
+#        firstReceiveTime:
+#          type: integer
+#          format: int64
+#          description: first receive timestamp
+#        firstReceiveHeight:
+#          type: integer
+#          description: first receive height
+#        lastSpentTime:
+#          type: integer
+#          format: int64
+#          description: last spent timestamp
+#        lastSpentHeight:
+#          type: integer
+#          description: last spent height
+#        lastReceiveTime:
+#          type: integer
+#          format: int64
+#          description: last receive timestamp
+#        lastReceiveHeight:
+#          type: integer
+#          description: last receive height
+#        txCount:
+#          type: integer
+#          description: total tx count for this address
+#        totalIncome:
+#          type: integer
+#          format: int64
+#          description: total income value
+#        totalOutcome:
+#          type: integer
+#          format: int64
+#          description: total outcome value
 
   requestBodies:
     BigdataQueryRequest:
