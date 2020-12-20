@@ -1,0 +1,330 @@
+openapi: 3.0.3
+info:
+  title: MetaSV OpenAPI Spec
+  description: API definition for MetaSV provided apis
+  version: 2.0.0
+  contact:
+    email: heqiming@metasv.com
+
+servers:
+  - url: 'https://apiv2.metasv.com'
+tags:
+  - name: block
+    description: block related apis
+
+  - name: tx
+    description: transaction related apis
+
+  - name: address
+    description: address related apis
+
+  - name: output
+    description: output spent status apis
+
+  - name: merchant
+    description: merchant apis
+
+paths:
+  /blocks:
+    get:
+      tags:
+        - block
+      summary: Get recent block list by paging. 30 items per page.
+      parameters:
+        - in: query
+          name: last
+          required: false
+          description: paging flag, height of last item in last page
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successfully get lists
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockHeader'
+#    post:
+#      tags:
+#        - bigdataQueryRequest
+#      summary: create new query request
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                scenarioName:
+#                  description: scenario defines how to process the request
+#                  type: string
+#                param:
+#                  description: The json format params passed to the query
+#                  type: string
+#                  default: '{}'
+#
+#      responses:
+#        '201':
+#          description: query created, return created record
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/BigdataQueryRequest'
+#
+#        '400':
+#          description: invalid parameter
+
+  '/block/{blockId}':
+    get:
+      tags:
+        - block
+      summary: Get block request by height or hash
+      parameters:
+        - name: blockId
+          in: path
+          description: The block id, height or hash acceptable.
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: get block info success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockHeader'
+        '404':
+          description: block info not found
+
+  '/block/{blockId}/txs':
+    get:
+      tags:
+        - block
+      summary: Get tx infos in the block by paging. 100 Items per page.
+      parameters:
+        - name: blockId
+          in: path
+          description: the request ID to search, block hash or height acceptable.
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: last
+          required: false
+          description: paging flag, blockIndex of last item returned last page.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get block tx list success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockTx'
+        '404':
+          description: block not found
+
+  '/tx/{txid}':
+      get:
+        tags:
+          - tx
+        summary: Get transaction detail by specific txid.
+        responses:
+          '200':
+            description: Get transaction detail success.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TxDetail'
+          '404':
+            description: Transaction not found
+
+  '/tx/{txid}/raw':
+    get:
+      tags:
+        - tx
+      summary: Get transaction raw hex by specific txid.
+      responses:
+        '200':
+          description: Get transaction raw hex success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxRaw'
+        '404':
+          description: Transaction not found
+
+
+components:
+  schemas:
+    BlockHeader:
+      type: object
+      properties:
+        height:
+          type: integer
+          description: Block height.
+        blockHash:
+          type: string
+          description: Block hash.
+        version:
+          type: integer
+          description: Block version.
+        prevBlockHash:
+          type: string
+          description: The block hash of the previous block.
+        merkleRoot:
+          type: string
+          description: Hex formatted block merkle root.
+        timestamp:
+          type: integer
+          format: int64
+          description: Block timestamp.
+        medianTime:
+          type: integer
+          format: int64
+          description: Block median timestamp.
+        reward:
+          type: integer
+          format: int64
+          description: Miner total rewards, including miner fee.
+        miner:
+          type: string
+          description: Guessed miner name.
+        minerAddress:
+          type: string
+          description: Miner address that received rewards.
+        txCount:
+          type: integer
+          description: Total txs count included in the block.
+        inputCount:
+          type: integer
+          description: Total input count in the block.
+        outputCount:
+          type: integer
+          description: Total output count in the block
+        size:
+          type: integer
+          format: int64
+          description: Size of the block
+        bits:
+          type: integer
+          format: int64
+          description: Target bits.
+        nonce:
+          type: integer
+          format: int64
+          description: Block nonce
+        coinbase:
+          type: string
+          description: Hex formated coinbase info.
+
+    BlockTx:
+      type: object
+      description: Tx simple info for block tx list.
+      properties:
+        blockIndex:
+          type: integer
+          description: Index of the transaction in the block.
+        txid:
+          type: string
+          description: Transaction hash.
+        blockHash:
+          type: string
+          description: Block hash of this tx.
+        height:
+          type: integer
+          description: Block height of this tx.
+        size:
+          type: integer
+          format: int64
+          description: transaction size
+        inputCount:
+          type: integer
+          description: Input count in this transaction
+        outputCount:
+          type: integer
+          description: Output count in this transaction.
+        lockTime:
+          type: integer
+          format: int64
+          description: Lock time of this transaction
+        fee:
+          type: integer
+          format: int64
+          description: Trasaction fee.
+
+    TxDetail:
+      type: object
+      description: Parsed tx info
+      properties:
+        txDetail:
+          $ref: '#/components/schemas/BlockTx'
+        inputs:
+          type: list
+          items:
+            $ref: '#/components/schemas/TxInput'
+        outputs:
+          type: list
+          items:
+            $ref: '#/components/schemas/TxOutput'
+    TxInput:
+      type: object
+      description: Parsed inputs from raw tx. Use output api to get value and spent info.
+      properties:
+        index:
+          type: integer
+          description: Input index of the tx.
+        utxoTxid:
+          type: string
+          description: The outpoint utxo txid that this input spent
+        utxoIndex:
+          type: integer
+          description: The outpoint utxo index that this input spent
+        address:
+          type: string
+          description: Parsed address from pubkey.
+        unlockScript:
+          type: string
+          description: The hex of the input script.
+    TxOutput:
+      type: object
+      description: Parsed outputs from raw tx.
+      properties:
+        index:
+          description: Output index of the tx.
+          type: integer
+        value:
+          description: Bitcoin Value in this output.
+          type: integer
+          format: int64
+        address:
+          description: Parsed address from output
+          type: string
+        lockScript:
+          description: Hex formatted lockScript
+          type: string
+    TxRaw:
+      type: object
+      description: Raw hex formatted Tx returned.
+      properties:
+        hex:
+          description: hex formatted raw tx.
+          type: string
+
+
+
+
+
+
+  requestBodies:
+    BigdataQueryRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+
+
+
+

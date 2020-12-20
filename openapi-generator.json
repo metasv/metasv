@@ -1,0 +1,9 @@
+{
+  "basePackage": "com.metasv.gateway.openapi",
+  "apiPackage": "com.metasv.gateway.openapi.api",
+  "modelPackage": "com.metasv.gateway.openapi.model",
+  "configPackage" : "com.metasv.gateway.openapi.config",
+  "invokerPackage" : "com.metasv.gateway.openapi",
+  "dateLibrary"   : "legacy",
+  "library": "spring-boot"
+}
