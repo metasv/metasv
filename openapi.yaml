@@ -617,6 +617,7 @@ components:
           type: integer
         spentHeight:
           description: height of the spent tx(-1 if unconfirmed, 0 if unspent)
+          type: integer
 
     UtxoPickRequest:
       description: Request object to batch pick utxo
