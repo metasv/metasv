@@ -300,6 +300,52 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutputInfo'
 
+  '/merchant/broadcast':
+    post:
+      tags:
+        - merchant
+      summary: Broadcast tx to coorperated miner merchant APIs(TAAL).
+      description: This api will broadcast to taal, you can broadcast tx with fee rate 0.25 sat/b by this api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxRaw'
+      responses:
+        '201':
+          description: Broadcast success, txid returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResult'
+        '403':
+          description: Broadcast Failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResult'
+
+  '/merchant/utxo':
+    post:
+      tags:
+        - merchant
+      summary: Pick utxos by addresses and amount.
+      description: Selects a set of Utxos with total value higher than the given amount from a given address list . In case of HD wallets, multiple addresses can be specified.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtxoPickRequest'
+      responses:
+        '200':
+          description: utxo pick success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddressUtxo'
+
 components:
   schemas:
     BlockHeader:
@@ -571,6 +617,21 @@ components:
           type: integer
         spentHeight:
           description: height of the spent tx(-1 if unconfirmed, 0 if unspent)
+
+    UtxoPickRequest:
+      description: Request object to batch pick utxo
+      type: object
+      properties:
+        addresses:
+          type: array
+          description: The address list to pick utxo from
+          items:
+            type: string
+        amount:
+          type: integer
+          format: int64
+          description: The total amount you want to pick
+
 
     # todo support super address detail
 #    AddressDetail:
