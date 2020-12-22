@@ -25,6 +25,20 @@ tags:
     description: merchant apis
 
 paths:
+
+  /block/info:
+    get:
+      tags:
+        - block
+      summary: Get current blockchain info from full node.
+      responses:
+        '200':
+          description: Get blockchain info success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockchainInfo'
+
   /block:
     get:
       tags:
@@ -350,6 +364,31 @@ paths:
 
 components:
   schemas:
+    BlockchainInfo:
+      type: object
+      properties:
+        chain:
+          type: string
+          description: mainnet or testnet
+        blocks:
+          type: integer
+          description: current block count
+        headers:
+          type: integer
+          description: current block header count
+        bestBlockHash:
+          type: string
+          description: current highest blockhash
+        difficulty:
+          type: string
+          description: decimal string for current difficulty
+        medianTime:
+          type: integer
+          format: int64
+          description: current median time
+        chainwork:
+          type: string
+          description: current pow
     BlockHeader:
       type: object
       properties:
