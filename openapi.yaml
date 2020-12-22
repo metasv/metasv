@@ -95,7 +95,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BlockTx'
+                type: array
+                items:
+                  $ref: '#/components/schemas/BlockTx'
         '404':
           description: block not found
 
