@@ -512,9 +512,9 @@ components:
         utxoIndex:
           type: integer
           description: The outpoint utxo index that this input spent
-        address:
-          type: string
-          description: Parsed address from pubkey.
+#        address:
+#          type: string
+#          description: Parsed address from pubkey.
         unlockScript:
           type: string
           description: The hex of the input script.
