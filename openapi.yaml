@@ -460,9 +460,6 @@ components:
         txid:
           type: string
           description: Transaction hash.
-        blockHash:
-          type: string
-          description: Block hash of this tx.
         height:
           type: integer
           description: Block height of this tx.
