@@ -1,37 +1,32 @@
-## Welcome to GitHub Pages
+# MetaSV
 
-You can use the [editor on GitHub](https://github.com/metasv/metasv/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+MetaSV is a BitcoinSV blockchain API service provider.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+This is MetaSV OpenAPI definition repo.
 
-### Markdown
+## Api Documentations
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+See detailed apis documentations here : https://developer.metasv.com/
 
-```markdown
-Syntax highlighted code block
+MetaSV api definition follows OpenAPI 3.0 spec.You can checkout the OPENAPI definitions here: https://swagger.io/specification/
 
-# Header 1
-## Header 2
-### Header 3
+## Postman Openapi Support
 
-- Bulleted
-- List
+### Import by yaml file
 
-1. Numbered
-2. List
+You can also use Postman to develop the apis. Postman currently supports OpenAPI 3.0 definitions.
 
-**Bold** and _Italic_ and `Code` text
+Open Postman -> Click Import -> Choose Link tab -> Enter url: https://developer.metasv.com/openapi.yaml
 
-[Link](url) and ![Image](src)
-```
+Then all related apis will be imported into postman.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Import by shared link
 
-### Jekyll Themes
+You can also open this link directly to import api definitions: https://www.getpostman.com/collections/4f3ead8386c2e2989f2e
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/metasv/metasv/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Client SDKs
 
-### Support or Contact
+You can use openapi generator to generate the client sdk for your project, choose your language(such as javascript, java, python, go etc.), use the `openapi.yaml` file to generate your client:
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+https://openapi-generator.tech/docs/generators#client-generators
+
