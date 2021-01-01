@@ -591,12 +591,6 @@ components:
         height:
           type: integer
           description: Height of the utxo, -1 if not confirmed
-        ancestors:
-          type: integer
-          description: Unconfirmed ancestors of the utxo(ancestors + decendents < 50)
-        decendents:
-          type: integer
-          description: Unconfirmed decendents of the utxo(ancestors + decendents < 50)
 
     AddressTx:
       type: object

@@ -30,3 +30,9 @@ You can use openapi generator to generate the client sdk for your project, choos
 
 https://openapi-generator.tech/docs/generators#client-generators
 
+## Update Logs
+
+### V2.0.1
+* remove unconfirmed chain calculation since BitcoinSV full node will remove mempool chain limit.
+
+
