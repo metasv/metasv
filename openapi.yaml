@@ -353,6 +353,13 @@ paths:
         - merchant
       summary: Pick utxos by addresses and amount.
       description: Selects a set of Utxos with total value higher than the given amount from a given address list . In case of HD wallets, multiple addresses can be specified.
+      parameters:
+        - name: confirmed
+          in: query
+          description: Whether the utxo is confirmed, "true" for confirmed, "false" for unconfirmed, null for both
+          required: false
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
