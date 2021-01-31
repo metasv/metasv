@@ -224,6 +224,12 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: confirmed
+          in: query
+          description: Whether the utxo is confirmed, true for confirmed utxo, false for unconfirmed utxo, null for all utxos.
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Get address utxos success.
