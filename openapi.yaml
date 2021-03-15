@@ -23,6 +23,8 @@ tags:
     description: output spent status (outpoint of vin) apis
   - name: merchant
     description: merchant apis
+  - name: xpub
+    description: xpub related apis
 
 paths:
 
@@ -375,6 +377,182 @@ paths:
                 items:
                   $ref: '#/components/schemas/AddressUtxo'
 
+  '/xpubs':
+    get:
+      tags:
+        - xpub
+      summary: Get all registered xpub strings. 300 per page.
+      parameters:
+        - name: flag
+          in: query
+          description: The last xpub of the last query(Paging flag)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get all registered xpub strings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  '/xpubs/count':
+    get:
+      tags:
+        - xpub
+      summary: Get the total count of registered xpubs.
+      responses:
+        '200':
+          description: Get total count success.
+          content:
+            application/json:
+              schema:
+                type: integer
+
+  '/xpub':
+    post:
+      tags:
+        - xpub
+      summary: Register a new xpub.
+      description: You have to register xpub before you can query them.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XpubRegisterRequest'
+      responses:
+        '201':
+          description: Register success, xpub returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubRegisterResult'
+        '200':
+          description: Register success, while xpub already exists. xpub returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubRegisterResult'
+        '403':
+          description: Register forbidden. Not authorized or exceed register limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubRegisterResult'
+        '400':
+          description: Bad request, xpub is not valid or skipHeight is beyond current block height.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubRegisterResult'
+
+  '/xpub/{xpub}':
+    get:
+      tags:
+        - xpub
+      summary: Get xpub detail and status. Only registered xpub available.
+      description: This api returns the xpub detail you registered, authentication is required.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub detail success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubDetail'
+        '404':
+          description: Xpub not found or not registered by your account.
+
+  '/xpub/{xpub}/balance':
+    get:
+      tags:
+        - xpub
+      summary: Get xpub balances including confirmed and unconfirmed.
+      description: This api returns confirmed balance(same as address balance), not sumed utxos.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub balance success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubBalance'
+
+  '/xpub/{xpub}/utxo':
+    get:
+      tags:
+        - xpub
+      summary: Get xpub utxos by specific xpub(100 per page).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get xpub utxos success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/XpubUtxo'
+
+  '/xpub/{xpub}/txs':
+    get:
+      tags:
+        - xpub
+      summary: Get xpub transaction history by specific xpub(100 per page).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get xpub transactions success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/XPubTransaction'
+
 components:
   schemas:
     BlockchainInfo:
@@ -678,67 +856,133 @@ components:
           format: int64
           description: The total amount you want to pick
 
+    XpubRegisterRequest:
+      description: Request object to register a new xpub
+      type: object
+      properties:
+        xpub:
+          type: string
+          description: The xpub to register.
+        skipHeight:
+          required: false
+          type: integer
+          description: Skip transactions before this height. Default is 0.
 
-    # todo support super address detail
-#    AddressDetail:
-#      type: object
-#      description: Current detail for typical address(register address required).
-#      properties:
-#        address:
-#          type: string
-#          description: current address
-#        confirmedBalance:
-#          type: integer
-#          format: int64
-#          description: total confirmed balance
-#        firstSpentTime:
-#          type: integer
-#          format: int64
-#          description: first spent timestamp
-#        firstSpentHeight:
-#          type: integer
-#          description: first spent height
-#        firstReceiveTime:
-#          type: integer
-#          format: int64
-#          description: first receive timestamp
-#        firstReceiveHeight:
-#          type: integer
-#          description: first receive height
-#        lastSpentTime:
-#          type: integer
-#          format: int64
-#          description: last spent timestamp
-#        lastSpentHeight:
-#          type: integer
-#          description: last spent height
-#        lastReceiveTime:
-#          type: integer
-#          format: int64
-#          description: last receive timestamp
-#        lastReceiveHeight:
-#          type: integer
-#          description: last receive height
-#        txCount:
-#          type: integer
-#          description: total tx count for this address
-#        totalIncome:
-#          type: integer
-#          format: int64
-#          description: total income value
-#        totalOutcome:
-#          type: integer
-#          format: int64
-#          description: total outcome value
+    XpubRegisterResult:
+      type: object
+      description: XpubRegister result
+      properties:
+        xpub:
+          description: return xpub if broadcast success
+          type: string
+        message:
+          description: return messages if broadcast failed
+          type: string
 
+    XpubDetail:
+      description: Registered Xpub detail
+      type: object
+      properties:
+        xpub:
+          description: String encoded extended pubkey (xpub)
+          type: string
+        receiveIndex:
+          description: Next unused receive index, path /0/index
+          type: integer
+        maxReceiveIndex:
+          description: Max lookahead receive index.
+          type: integer
+        changeIndex:
+          description: Next unused change index, path /1/index
+          type: integer
+        maxChangeIndex:
+          description: Max lookahead change index.
+          type: integer
+        mode:
+          description: Current xpub process mode, 0 means preparing(not ready), 1 means synchronizing(ready)
+          type: integer
+        skipHeight:
+          description: Skip blocks before skipHeight while searching transactions. This will speed up sync time.
+          type: integer
+        processHeight:
+          description: Xpub current processed height.
+          type: integer
 
-  requestBodies:
-    BigdataQueryRequest:
-      content:
-        application/json:
-          schema:
-            type: object
+    XpubBalance:
+      description: Registered Xpub balance including confirmed and unconfirmed
+      type: object
+      properties:
+        confirmed:
+          description: confirmed balance
+          type: integer
+          format: int64
+        unconfirmed:
+          description: unconfirmed balance
+          type: integer
+          format: int64
 
+    XpubUtxo:
+      description: Utxo belongs to the specified xpub
+      type: object
+      properties:
+        xpub:
+          description: xpub of the utxo
+          type: string
+        address:
+          description: Address string of this utxo
+          type: string
+        addressType:
+          description: Address type, 0 for receive address, 1 for change address. path is {{addressType}}/{{addressIndex}}
+          type: integer
+        addressIndex:
+          description: Address index. Address path in the xpub is {{addressType}}/{{addressIndex}}
+          type: integer
+        txid:
+          description: Txid for this utxo.
+          type: string
+        txIndex:
+          description: Output index for the Utxo.
+          type: integer
+        value:
+          description: Satoshi value of the utxo.
+          type: integer
+          format: int64
+        height:
+          description: The height of this utxo, -1 for unconfirmed utxo.
+          type: integer
 
-
+    XPubTransaction:
+      description: Xpub transaction history
+      type: object
+      properties:
+        xpub:
+          description: query xpub
+          type: string
+        txid:
+          description: Txid for this transaction.
+          type: string
+        maxReceiveIndex:
+          description: Max lookahead receive index when processing this transaction.
+          type: integer
+        maxChangeIndex:
+          description: Max lookahead change index when processing this transaction.
+          type: integer
+        income:
+          description: Total received satoshis(Including all address)
+          type: integer
+          format: int64
+        outcome:
+          description: Total spent satoshis(Including all address)
+          type: integer
+          format: int64
+        height:
+          description: Height for this transaction. -1 for unconfirmed
+          type: integer
+        blockIndex:
+          description: Block index for this transaction, -1 for unconfirmed
+          type: integer
+        blockTime:
+          description: Block timestamp for this transaction, if unconfirmed, the time is first seen time.
+          type: integer
+          format: int64
 
