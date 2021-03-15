@@ -422,32 +422,49 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/XpubRegisterRequest'
+              $ref: '#/components/schemas/XpubRequest'
       responses:
         '201':
           description: Register success, xpub returned.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/XpubRegisterResult'
+                $ref: '#/components/schemas/XpubResult'
         '200':
           description: Register success, while xpub already exists. xpub returned.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/XpubRegisterResult'
+                $ref: '#/components/schemas/XpubResult'
         '403':
           description: Register forbidden. Not authorized or exceed register limit.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/XpubRegisterResult'
+                $ref: '#/components/schemas/XpubResult'
         '400':
           description: Bad request, xpub is not valid or skipHeight is beyond current block height.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/XpubRegisterResult'
+                $ref: '#/components/schemas/XpubResult'
+    delete:
+      tags:
+        - xpub
+      summary: Delete a registered xpub.
+      description: You can use this api to delete your registered xpub.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XpubRequest'
+      responses:
+        '200':
+          description: Delete success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
 
   '/xpub/{xpub}':
     get:
@@ -856,8 +873,8 @@ components:
           format: int64
           description: The total amount you want to pick
 
-    XpubRegisterRequest:
-      description: Request object to register a new xpub
+    XpubRequest:
+      description: Request object to register(or delete) a new xpub
       type: object
       properties:
         xpub:
@@ -866,9 +883,9 @@ components:
         skipHeight:
           required: false
           type: integer
-          description: Skip transactions before this height. Default is 0.
+          description: Skip transactions before this height. Default is 0. Ignore this while deleting xpub.
 
-    XpubRegisterResult:
+    XpubResult:
       type: object
       description: XpubRegister result
       properties:
