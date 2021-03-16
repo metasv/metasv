@@ -495,6 +495,13 @@ paths:
         - xpub
       summary: Delete a registered xpub.
       description: You can use this api to delete your registered xpub.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Delete success.
