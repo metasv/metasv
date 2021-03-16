@@ -379,6 +379,8 @@ paths:
 
   '/xpubs':
     get:
+      security:
+        - bearerAuth: []
       tags:
         - xpub
       summary: Get all registered xpub strings. 300 per page.
@@ -398,9 +400,13 @@ paths:
                 type: array
                 items:
                   type: string
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpubs/count':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Get the total count of registered xpubs.
@@ -411,9 +417,13 @@ paths:
             application/json:
               schema:
                 type: integer
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpub':
     post:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Register a new xpub.
@@ -448,7 +458,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/XpubResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
     delete:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Delete a registered xpub.
@@ -465,9 +479,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/XpubResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpub/{xpub}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Get xpub detail and status. Only registered xpub available.
@@ -488,9 +506,13 @@ paths:
                 $ref: '#/components/schemas/XpubDetail'
         '404':
           description: Xpub not found or not registered by your account.
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpub/{xpub}/balance':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Get xpub balances including confirmed and unconfirmed.
@@ -509,9 +531,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/XpubBalance'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpub/{xpub}/utxo':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Get xpub utxos by specific xpub(100 per page).
@@ -539,9 +565,13 @@ paths:
                 maxItems: 100
                 items:
                   $ref: '#/components/schemas/XpubUtxo'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/xpub/{xpub}/txs':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - xpub
       summary: Get xpub transaction history by specific xpub(100 per page).
@@ -569,9 +599,20 @@ paths:
                 maxItems: 100
                 items:
                   $ref: '#/components/schemas/XPubTransaction'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
 components:
+  securitySchemes:
+    # arbitrary name for the security scheme
+    bearerAuth:
+      type: http
+      scheme: bearer
+      # optional, arbitrary value for documentation purposes
+      bearerFormat: JWT
   schemas:
+    UnauthorizedError:
+      description: Access token is missing or invalid
     BlockchainInfo:
       type: object
       properties:
