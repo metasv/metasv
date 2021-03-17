@@ -118,27 +118,27 @@ paths:
           description: block not found
 
   '/tx/{txid}':
-      get:
-        tags:
-          - tx
-        summary: Get transaction detail by specific txid. Use '/vin/{txid}' to get detailed input info including address and value.
-        description: This api is parsed from raw hex, you can use /tx/{txid}/raw to parse tx by yourself, If you want detail input info, use '/vin/{txid}' to get detailed input info including address and value.
-        parameters:
-          - name: txid
-            in: path
-            description: the request ID to search, txhash
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: Get transaction detail success.
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/TxDetail'
-          '404':
-            description: Transaction not found
+    get:
+      tags:
+        - tx
+      summary: Get transaction detail by specific txid. Use '/vin/{txid}' to get detailed input info including address and value.
+      description: This api is parsed from raw hex, you can use /tx/{txid}/raw to parse tx by yourself, If you want detail input info, use '/vin/{txid}' to get detailed input info including address and value.
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get transaction detail success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxDetail'
+        '404':
+          description: Transaction not found
 
   '/tx/{txid}/raw':
     get:
@@ -591,8 +591,7 @@ paths:
           description: The last id of the last query(Paging flag)
           required: false
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
           description: Get xpub transactions success.
@@ -762,9 +761,9 @@ components:
         utxoIndex:
           type: integer
           description: The outpoint utxo index that this input spent
-#        address:
-#          type: string
-#          description: Parsed address from pubkey.
+        #        address:
+        #          type: string
+        #          description: Parsed address from pubkey.
         unlockScript:
           type: string
           description: The hex of the input script.
@@ -1046,4 +1045,7 @@ components:
           description: Block timestamp for this transaction, if unconfirmed, the time is first seen time.
           type: integer
           format: int64
+        flag:
+          description: Paging flag, format blockTimestamp_blockIndex
+          type: string
 
