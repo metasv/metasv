@@ -1010,6 +1010,10 @@ components:
         height:
           description: The height of this utxo, -1 for unconfirmed utxo.
           type: integer
+        flag:
+          description: The paging flag of utxo
+          type: integer
+          format: int64
 
     XPubTransaction:
       description: Xpub transaction history
