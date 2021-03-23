@@ -927,6 +927,12 @@ components:
         skipHeight:
           type: integer
           description: Skip transactions before this height. Default is 0. Ignore this while deleting xpub.
+        initReceiveIndex:
+          type: integer
+          description: Set the init maxReceiveIndex to {initReceiveIndex}(less than 5000) before the initial crawl , default is 200. This could increase cost.
+        initChangeIndex:
+          type: integer
+          description: Set the init maxChangeIndex(less than 5000) before the initial crawl , default is 200. This could increase cost.
 
     XpubResult:
       type: object
