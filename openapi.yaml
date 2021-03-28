@@ -25,6 +25,8 @@ tags:
     description: merchant apis
   - name: xpub
     description: xpub related apis
+  - name: user
+    description: user account related apis
 
 paths:
 
@@ -605,6 +607,89 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/user/clientPubkey':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: See https://github.com/metasv/metasv-client-signature for details. Get all trusted public keys.
+      responses:
+        '200':
+          description: Get all registered client public keys.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: See https://github.com/metasv/metasv-client-signature for details. Register new client public key.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientPubkeyRequest'
+      responses:
+        '201':
+          description: Register success, pubkey returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPubkeyResult'
+        '200':
+          description: Register success, while pubkey already exists. pubkey returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPubkeyResult'
+        '403':
+          description: Register forbidden. Not authorized or exceed register limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPubkeyResult'
+        '400':
+          description: Bad request, pubkey is not valid, or already registered by others.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPubkeyResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/user/clientPubkey/{pubkey}':
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Delete a registered client public key.
+      description: See https://github.com/metasv/metasv-client-signature for details. You can use this api to delete your registered public key.
+      parameters:
+        - name: pubkey
+          in: path
+          description: the pubkey to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientPubkeyResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+
 components:
   securitySchemes:
     # arbitrary name for the security scheme
@@ -1059,3 +1144,21 @@ components:
           description: Paging flag, format blockTimestamp_blockIndex
           type: string
 
+    ClientPubkeyRequest:
+      description: Request object to register(or delete) a new client public key.
+      type: object
+      properties:
+        pubkey:
+          type: string
+          description: The hex format public key to register. (i.e. 02fd17dd0c52e54e5eed4ebe1e75df5e48df422f81c26520d44380bef1691fdd98)
+
+    ClientPubkeyResult:
+      type: object
+      description: Client public key result
+      properties:
+        pubkey:
+          description: return pubkey if created successfully
+          type: string
+        message:
+          description: return messages if broadcast failed
+          type: string
