@@ -561,13 +561,6 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: limit
-          in: query
-          description: The max items returned in this query(default 100), not bigger than 1000.
-          required: false
-          schema:
-            type: integer
-            format: int64
       responses:
         '200':
           description: Get xpub utxos success.
