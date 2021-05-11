@@ -614,6 +614,38 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/xpub/{xpub}/address/{address}':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub
+      summary: Get xpub address type and index. Only index under max index is valid. Otherwise not found.
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub address success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubAddress'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: Address not found in the xpub.
+
   '/user/clientPubkey':
     get:
       security:
@@ -1112,6 +1144,23 @@ components:
           description: The paging flag of utxo
           type: integer
           format: int64
+
+    XpubAddress:
+      description: Address detail in the wallet
+      type: object
+      properties:
+        xpub:
+          description: xpub in the query
+          type: string
+        address:
+          description: Address in the query
+          type: string
+        addressType:
+          description: Address type, 0 for receive address, 1 for change address. path is {{addressType}}/{{addressIndex}}
+          type: integer
+        addressIndex:
+          description: Address index. Address path in the xpub is {{addressType}}/{{addressIndex}}
+          type: integer
 
     XPubTransaction:
       description: Xpub transaction history
