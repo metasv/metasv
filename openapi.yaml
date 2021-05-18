@@ -546,7 +546,7 @@ paths:
         - bearerAuth: [ ]
       tags:
         - xpub
-      summary: Get xpub utxos by specific xpub(300 per page).
+      summary: Get xpub utxos by specific xpub(100 per page).
       parameters:
         - name: xpub
           in: path
@@ -554,6 +554,13 @@ paths:
           required: true
           schema:
             type: string
+        - name: limit
+          in: query
+          description: The max items returned in this query(default 100), not bigger than 500.
+          required: false
+          schema:
+            type: integer
+            format: int64
         - name: flag
           in: query
           description: The last id of the last query(Paging flag)
