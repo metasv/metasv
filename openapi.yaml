@@ -696,7 +696,7 @@ paths:
         '404':
           description: Utxo not found.
 
-  '/sensible/oracle/utxo-spend-by/{txid}/{index}/{byTxid}':
+  '/sensible/oracle/utxoSpendBy/{txid}/{index}/{byTxid}':
     get:
       tags:
         - sensible
@@ -730,7 +730,7 @@ paths:
         '404':
           description: Utxo or transaction not found.
 
-  '/sensible/oracle/utxo-spend-by-utxo/{txid}/{index}/{byTxid}/{byTxIndex}':
+  '/sensible/oracle/utxoSpendByUtxo/{txid}/{index}/{byTxid}/{byTxIndex}':
     get:
       tags:
         - sensible
