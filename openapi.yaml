@@ -25,6 +25,8 @@ tags:
     description: merchant apis
   - name: xpub
     description: xpub related apis
+  - name: sensible
+    description: sensible contract related apis
   - name: user
     description: user account related apis
 
@@ -653,6 +655,129 @@ paths:
         '404':
           description: Address not found in the xpub.
 
+  '/sensible/ft/address/{address}/utxo':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sensible
+      summary: Get all sensible token utxos for specific address.
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: codeHash
+          in: query
+          description: Filter by contract code hash
+          required: false
+          schema:
+            type: string
+        - name: genesis
+          in: query
+          description: Filter by contract genesis
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get sensible ft utxo success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/SensibleFtUtxo'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/sensible/ft/address/{address}/balance':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sensible
+      summary: Get all sensible token balances for specific address.
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: codeHash
+          in: query
+          description: Filter by contract code hash
+          required: false
+          schema:
+            type: string
+        - name: genesis
+          in: query
+          description: Filter by contract genesis
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get sensible ft balances success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/SensibleFtBalance'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/sensible/ft/address/{address}/txs':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sensible
+      summary: Get all sensible token transaction history for specific address.
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: codeHash
+          in: query
+          description: Filter by contract code hash
+          required: false
+          schema:
+            type: string
+        - name: genesis
+          in: query
+          description: Filter by contract genesis
+          required: false
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get sensible ft transactions success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/SensibleFtTransaction'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
   '/user/clientPubkey':
     get:
       security:
@@ -1224,4 +1349,113 @@ components:
           type: string
         message:
           description: return messages if broadcast failed
+          type: string
+
+    SensibleFtUtxo:
+      description: Sensible fungible token Utxo belongs to the specified address
+      type: object
+      properties:
+        address:
+          description: Address string of this utxo
+          type: string
+        codeHash:
+          description: Codehash of this utxo.
+          type: string
+        genesis:
+          description: Genesis of this utxo.
+          type: string
+        name:
+          description: Name of the token.
+          type: string
+        symbol:
+          description: Symbol of the token.
+          type: string
+        decimal:
+          description: The decimal position.
+          type: integer
+        txid:
+          description: Txid for this utxo.
+          type: string
+        txIndex:
+          description: Output index for the Utxo.
+          type: integer
+        value:
+          description: Token value of the utxo(Irrelavant to satoshi value).
+          type: integer
+          format: int64
+        height:
+          description: The height of this utxo, -1 for unconfirmed utxo.
+          type: integer
+
+    SensibleFtBalance:
+      description: Sensible fungible token balance
+      type: object
+      properties:
+        codeHash:
+          description: Codehash of the token.
+          type: string
+        genesis:
+          description: Genesis of the token.
+          type: string
+        name:
+          description: Name of the token.
+          type: string
+        symbol:
+          description: Symbol of the token.
+          type: string
+        decimal:
+          description: The decimal position.
+          type: integer
+        confirmed:
+          description: Confirmed balance of the token.
+          type: integer
+          format: int64
+        unconfirmed:
+          description: Unconfirmed balance of the token.
+
+    SensibleFtTransaction:
+      description: Sensible fungible token transaction history for specific address
+      type: object
+      properties:
+        address:
+          description: The querying address
+          type: string
+        codeHash:
+          description: Codehash of the token.
+          type: string
+        genesis:
+          description: Genesis of the token.
+          type: string
+        txid:
+          description: Txid for this transaction.
+          type: string
+        name:
+          description: Name of the token.
+          type: string
+        symbol:
+          description: Symbol of the token.
+          type: string
+        decimal:
+          description: The decimal position.
+          type: integer
+        income:
+          description: Total received token(This token only)
+          type: integer
+          format: int64
+        outcome:
+          description: Total spent token(This token only)
+          type: integer
+          format: int64
+        height:
+          description: Height for this transaction. -1 for unconfirmed
+          type: integer
+        blockIndex:
+          description: Block index for this transaction, -1 for unconfirmed
+          type: integer
+        blockTime:
+          description: Block timestamp for this transaction, if unconfirmed, the time is first seen time.
+          type: integer
+          format: int64
+        flag:
+          description: Paging flag, format blockTimestamp_blockIndex
           type: string
