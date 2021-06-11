@@ -655,6 +655,122 @@ paths:
         '404':
           description: Address not found in the xpub.
 
+  '/sensible/oracle':
+    get:
+      tags:
+        - sensible
+      summary: Get metasv sensible oracle info.
+      responses:
+        '200':
+          description: Get sensible oracle success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensibleOracleInfo'
+
+  '/sensible/oracle/utxo/{txid}/{index}':
+    get:
+      tags:
+        - sensible
+      summary: Get signature for utxo.
+      parameters:
+        - name: txid
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type: string
+        - name: index
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type:  integer
+      responses:
+        '200':
+          description: Get signature success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensibleSignatureUtxo'
+        '404':
+          description: Utxo not found.
+
+  '/sensible/oracle/utxo-spend-by/{txid}/{index}/{byTxid}':
+    get:
+      tags:
+        - sensible
+      summary: Get signature for utxo spend by transaction.
+      parameters:
+        - name: txid
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type: string
+        - name: index
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type:  integer
+        - name: byTxid
+          in: path
+          description: txid that spent this utxo
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get signature success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensibleSignatureUtxoSpendBy'
+        '404':
+          description: Utxo or transaction not found.
+
+  '/sensible/oracle/utxo-spend-by-utxo/{txid}/{index}/{byTxid}/{byTxIndex}':
+    get:
+      tags:
+        - sensible
+      summary: Get signature for utxo spend by transaction.
+      parameters:
+        - name: txid
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type: string
+        - name: index
+          in: path
+          description: Utxo txid.
+          required: true
+          schema:
+            type: integer
+        - name: byTxid
+          in: path
+          description: txid that spent this utxo
+          required: true
+          schema:
+            type: string
+        - name: byTxIndex
+          in: path
+          description: tx index that spent this utxo
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get signature success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensibleSignatureUtxoSpendByUtxo'
+        '404':
+          description: Utxo or transaction not found.
+
+
   '/sensible/ft/address/{address}/utxo':
     get:
       security:
@@ -1350,6 +1466,124 @@ components:
         message:
           description: return messages if broadcast failed
           type: string
+
+    SensibleOracleInfo:
+      description: Oracle public key info.
+      type: object
+      properties:
+        pubKey:
+          description: Oracle public key.
+          type: string
+        contact:
+          description: heqiming@metasv.com
+          type: string
+        job:
+          description: Name of the job.
+          type: string
+        github:
+          description: Github repo(https://github.com/metasv/metasv).
+          type: string
+
+    SensibleSignatureUtxo:
+      description: Signature for utxo.
+      type: object
+      properties:
+        txId:
+          description: Utxo txid.
+          type: string
+        index:
+          description: utxo index
+          type: integer
+        sigBE:
+          description: Big endian signature hex.
+          type: string
+        sigLE:
+          description: Little endian signature hex.
+          type: string
+        padding:
+          description: Signature padding.
+          type: string
+        payload:
+          description: Signature payload(txid, index, value, hash160(script))
+          type: string
+        script:
+          description: Script original content with hex encoding.
+          type: string
+
+    SensibleSignatureUtxoSpendBy:
+      description: Signature for utxo spent by tx.
+      type: object
+      properties:
+        txId:
+          description: Utxo txid.
+          type: string
+        index:
+          description: utxo index
+          type: integer
+        byTxId:
+          description: Utxo txid.
+          type: string
+        sigBE:
+          description: Big endian signature hex.
+          type: string
+        sigLE:
+          description: Little endian signature hex.
+          type: string
+        padding:
+          description: Signature padding.
+          type: string
+        payload:
+          description: Signature payload(txid, index, value, hash160(script), bytxid)
+          type: string
+        script:
+          description: Script original content with hex encoding.
+
+    SensibleSignatureUtxoSpendByUtxo:
+      description: Signature for utxo spent by tx, and signature for new utxo.
+      type: object
+      properties:
+        txId:
+          description: Utxo txid(same as parameter).
+          type: string
+        index:
+          description: utxo index(same as parameter)
+          type: integer
+        byTxId:
+          description: spent txid(same as parameter).
+          type: string
+        byTxIndex:
+          description: spent utxo index(same as parameter).
+        sigBE:
+          description: Big endian signature hex.
+          type: string
+        sigLE:
+          description: Little endian signature hex.
+          type: string
+        padding:
+          description: Signature padding.
+          type: string
+        payload:
+          description: Signature payload(txid, index, value, hash160(script), bytxid)
+          type: string
+        script:
+          description: Script original content with hex encoding.
+          type: string
+        byTxSigBE:
+          description: Big endian signature hex.
+          type: string
+        byTxSigLE:
+          description: Little endian signature hex.
+          type: string
+        byTxPadding:
+          description: Signature padding.
+          type: string
+        byTxPayload:
+          description: Payload for the new utxo(byTxid, byTxIndex, byTxValue, hash160(byTxScript)).
+          type: string
+        byTxScript:
+          description: Script with hex encoding
+          type: string
+
 
     SensibleFtUtxo:
       description: Sensible fungible token Utxo belongs to the specified address
