@@ -1537,6 +1537,7 @@ components:
           type: string
         script:
           description: Script original content with hex encoding.
+          type: string
 
     SensibleSignatureUtxoSpendByUtxo:
       description: Signature for utxo spent by tx, and signature for new utxo.
@@ -1553,6 +1554,7 @@ components:
           type: string
         byTxIndex:
           description: spent utxo index(same as parameter).
+          type: integer
         sigBE:
           description: Big endian signature hex.
           type: string
