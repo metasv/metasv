@@ -1646,6 +1646,8 @@ components:
           format: int64
         unconfirmed:
           description: Unconfirmed balance of the token.
+          type: integer
+          format: int64
 
     SensibleFtTransaction:
       description: Sensible fungible token transaction history for specific address
