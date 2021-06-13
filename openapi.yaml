@@ -1619,6 +1619,16 @@ components:
           description: Token value of the utxo(Irrelavant to satoshi value).
           type: integer
           format: int64
+        valueString:
+          description: Token value of the utxo(In string format)
+          type: string
+        satoshi:
+          description: Bsv value of the utxo(Irrelavant to token value)
+          type: integer
+          format: int64
+        satoshiString:
+          description: Bsv value of the utxo(In string format)
+          type: string
         height:
           description: The height of this utxo, -1 for unconfirmed utxo.
           type: integer
@@ -1642,14 +1652,23 @@ components:
         decimal:
           description: The decimal position.
           type: integer
+        utxoCount:
+          description: Number of utxos for this token.
+          type: integer
         confirmed:
           description: Confirmed balance of the token.
           type: integer
           format: int64
+        confirmedString:
+          description: Confirmed balance of the token(In string format).
+          type: string
         unconfirmed:
           description: Unconfirmed balance of the token.
           type: integer
           format: int64
+        unconfirmedString:
+          description: Unconfirmed balance of the token(In string format).
+          type: string
 
     SensibleFtTransaction:
       description: Sensible fungible token transaction history for specific address
