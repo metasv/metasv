@@ -328,6 +328,34 @@ paths:
                 items:
                   $ref: '#/components/schemas/OutputInfo'
 
+  '/vin/{txid}/detail':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - outpoint
+        - tx
+      summary: Get all output point of vins in the tx with detailed output script.
+      description: Search output points by spent txid. Use this api to get detailed inputs for the tx.
+      parameters:
+        - name: txid
+          in: path
+          description: The txid of the vins
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get vin list success.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OutputInfoDetail'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
   '/merchant/broadcast':
     post:
       tags:
@@ -1255,6 +1283,39 @@ components:
         index:
           description: index of this output in the tx.
           type: integer
+        address:
+          description: parsed address of this output, empty for non standard.
+          type: string
+        value:
+          description: value of this output
+          type: integer
+          format: int64
+        spent:
+          description: this output is spent or not, true if spent
+          type: boolean
+        spentTxid:
+          description: txid that spent this output
+          type: string
+        spentIndex:
+          description: vin index of the spent tx
+          type: integer
+        spentHeight:
+          description: height of the spent tx(-1 if unconfirmed, 0 if unspent)
+          type: integer
+
+    OutputInfoDetail:
+      description: spent status and value info of the output with detailed output script.
+      type: object
+      properties:
+        txid:
+          description: txid that this output is in.
+          type: string
+        index:
+          description: index of this output in the tx.
+          type: integer
+        script:
+          description: output scrypt in hex format
+          type: string
         address:
           description: parsed address of this output, empty for non standard.
           type: string
