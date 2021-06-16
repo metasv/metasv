@@ -1567,9 +1567,6 @@ components:
         payload:
           description: Signature payload(txid, index, value, hash160(script))
           type: string
-        script:
-          description: Script original content with hex encoding.
-          type: string
 
     SensibleSignatureUtxoSpendBy:
       description: Signature for utxo spent by tx.
@@ -1595,9 +1592,6 @@ components:
           type: string
         payload:
           description: Signature payload(txid, index, value, hash160(script), bytxid)
-          type: string
-        script:
-          description: Script original content with hex encoding.
           type: string
 
     SensibleSignatureUtxoSpendByUtxo:
@@ -1627,9 +1621,6 @@ components:
           type: string
         payload:
           description: Signature payload(txid, index, value, hash160(script), bytxid)
-          type: string
-        script:
-          description: Script original content with hex encoding.
           type: string
         byTxSigBE:
           description: Big endian signature hex.
