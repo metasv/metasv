@@ -1544,6 +1544,9 @@ components:
         github:
           description: Github repo(https://github.com/metasv/metasv).
           type: string
+        version:
+          description: Version of the oracle
+          type: string
 
     SensibleSignatureUtxo:
       description: Signature for utxo.
