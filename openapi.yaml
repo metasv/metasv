@@ -1661,6 +1661,9 @@ components:
         symbol:
           description: Symbol of the token.
           type: string
+        sensibleId:
+          description: SensibleId of the token
+          type: string
         decimal:
           description: The decimal position.
           type: integer
@@ -1707,6 +1710,9 @@ components:
         decimal:
           description: The decimal position.
           type: integer
+        sensibleId:
+          description: SensibleId of the token
+          type: string
         utxoCount:
           description: Number of utxos for this token.
           type: integer
