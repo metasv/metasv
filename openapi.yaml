@@ -1744,6 +1744,9 @@ components:
         genesis:
           description: Genesis of the token.
           type: string
+        sensibleId:
+          description: SensibleId of the token
+          type: string
         txid:
           description: Txid for this transaction.
           type: string
