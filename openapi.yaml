@@ -1106,15 +1106,15 @@ components:
       type: object
       description: Tx simple info for block tx list.
       properties:
-        blockIndex:
-          type: integer
-          description: Index of the transaction in the block.
         txid:
           type: string
           description: Transaction hash.
         height:
           type: integer
           description: Block height of this tx.
+        blockHash:
+          type: string
+          description: Hash of the block
         size:
           type: integer
           format: int64
@@ -1161,9 +1161,13 @@ components:
         utxoIndex:
           type: integer
           description: The outpoint utxo index that this input spent
-        #        address:
-        #          type: string
-        #          description: Parsed address from pubkey.
+        address:
+          type: string
+          description: Parsed address from pubkey(P2PKH input only).
+        value:
+          type: integer
+          format: int64
+          description: satoshi value of this input.
         unlockScript:
           type: string
           description: The hex of the input script.
