@@ -1133,6 +1133,10 @@ components:
           type: integer
           format: int64
           description: Trasaction fee.
+        confirmation:
+          type: integer
+          description: Confirmation for this transaction, -1 if unconfirmed.
+
 
     TxDetail:
       type: object
