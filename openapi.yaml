@@ -125,7 +125,7 @@ paths:
     get:
       tags:
         - tx
-      summary: Get transaction detail by specific txid. Use '/vin/{txid}' to get detailed input info including address and value.
+      summary: Get transaction detail by specific txid.
       description: This api is parsed from raw hex, you can use /tx/{txid}/raw to parse tx by yourself, If you want detail input info, use '/vin/{txid}' to get detailed input info including address and value.
       parameters:
         - name: txid
@@ -1133,9 +1133,13 @@ components:
           type: integer
           format: int64
           description: Trasaction fee.
-        confirmation:
+        confirmations:
           type: integer
-          description: Confirmation for this transaction, -1 if unconfirmed.
+          description: Confirmations of this transaction, -1 if unconfirmed.
+        timestamp:
+          type: integer
+          format: int64
+          description: Block timestamp for the transaction, confirmed tx only.
 
 
     TxDetail:
