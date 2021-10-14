@@ -25,6 +25,8 @@ tags:
     description: merchant apis
   - name: xpub
     description: xpub related apis
+  - name: xpub3
+    description: xpub related apis(internal test only)
   - name: sensible
     description: sensible contract related apis
   - name: user
@@ -1004,6 +1006,272 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+
+  '/xpub3s':
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - xpub3
+      summary: Get all registered xpub strings. 300 per page.
+      parameters:
+        - name: flag
+          in: query
+          description: The last xpub of the last query(Paging flag)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get all registered xpub strings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3s/count':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get the total count of registered xpubs.
+      responses:
+        '200':
+          description: Get total count success.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3':
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Register a new xpub.
+      description: You have to register xpub before you can query them.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XpubRequest'
+      responses:
+        '201':
+          description: Register success, xpub returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
+        '200':
+          description: Register success, while xpub already exists. xpub returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
+        '403':
+          description: Register forbidden. Not authorized or exceed register limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
+        '400':
+          description: Bad request, xpub is not valid or skipHeight is beyond current block height.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3/{xpub}':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get xpub detail and status. Only registered xpub available.
+      description: This api returns the xpub detail you registered, authentication is required.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub detail success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubDetail'
+        '404':
+          description: Xpub not found or not registered by your account.
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Delete a registered xpub.
+      description: You can use this api to delete your registered xpub.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubResult'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+
+  '/xpub3/{xpub}/balance':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get xpub balances including confirmed and unconfirmed.
+      description: This api returns confirmed balance(same as address balance), not sumed utxos.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub balance success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubBalance'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3/{xpub}/utxo':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get xpub utxos by specific xpub(300 per page).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The max items returned in this query(default 300), not bigger than 500.
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get xpub utxos success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 300
+                items:
+                  $ref: '#/components/schemas/XpubUtxo'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3/{xpub}/txs':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get xpub transaction history by specific xpub(100 per page).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The max items returned in this query(default 100), not bigger than 1000.
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get xpub transactions success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/XPubTransaction'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpub3/{xpub}/address/{address}':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub3
+      summary: Get xpub address type and index. Only index under max index is valid. Otherwise not found.
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub address success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubAddress'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: Address not found in the xpub.
 
 components:
   securitySchemes:
