@@ -34,6 +34,8 @@ paths:
 
   /block/info:
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - block
       summary: Get current blockchain info from full node.
@@ -47,6 +49,8 @@ paths:
 
   /block:
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - block
       summary: Get recent block list by paging. 30 items per page.
@@ -70,6 +74,8 @@ paths:
 
   '/block/{blockId}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - block
       summary: Get block request by height or hash
@@ -93,6 +99,8 @@ paths:
 
   '/block/{blockId}/txs':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - block
       summary: Get tx infos in the block by paging. 100 Items per page.
@@ -123,6 +131,8 @@ paths:
 
   '/tx/{txid}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - tx
       summary: Get transaction detail by specific txid.
@@ -146,6 +156,8 @@ paths:
 
   '/tx/{txid}/raw':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - tx
       summary: Get transaction raw hex by specific txid.
@@ -168,6 +180,8 @@ paths:
 
   '/tx/broadcast':
     post:
+      security:
+        - bearerAuth: [ ]
       tags:
         - tx
       summary: Broadcast tx to metasv fullnode.
@@ -193,6 +207,8 @@ paths:
 
   '/address/{address}/balance':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - address
       summary: Get address balance by specific address.
@@ -213,6 +229,8 @@ paths:
 
   '/address/{address}/utxo':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - address
       summary: Get address utxos by specific address(100 per page).
@@ -249,6 +267,8 @@ paths:
 
   '/address/{address}/tx':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - address
       summary: Get address history by specific address(Only recent 3 months available, Use super address apis if you need more history).
@@ -278,6 +298,8 @@ paths:
 
   '/outpoint/{txid}/{index}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - outpoint
       summary: Get tx output(outpoint for vin) spent status.
@@ -305,6 +327,8 @@ paths:
 
   '/vin/{txid}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - outpoint
         - tx
@@ -358,6 +382,8 @@ paths:
 
   '/merchant/broadcast':
     post:
+      security:
+        - bearerAuth: [ ]
       tags:
         - merchant
       summary: Broadcast tx to coorperated miner merchant APIs(TAAL).
@@ -383,6 +409,8 @@ paths:
 
   '/merchant/utxo':
     post:
+      security:
+        - bearerAuth: [ ]
       tags:
         - merchant
       summary: Pick utxos by addresses and amount.
