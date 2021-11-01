@@ -699,6 +699,8 @@ paths:
 
   '/sensible/oracle':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - sensible
       summary: Get metasv sensible oracle info.
@@ -712,6 +714,8 @@ paths:
 
   '/sensible/oracle/utxo/{txid}/{index}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - sensible
       summary: Get signature for utxo.
@@ -740,6 +744,8 @@ paths:
 
   '/sensible/oracle/utxoSpendBy/{txid}/{index}/{byTxid}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - sensible
       summary: Get signature for utxo spend by transaction.
@@ -774,6 +780,8 @@ paths:
 
   '/sensible/oracle/utxoSpendByUtxo/{txid}/{index}/{byTxid}/{byTxIndex}':
     get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - sensible
       summary: Get signature for utxo spend by transaction.
