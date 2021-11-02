@@ -632,6 +632,30 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/xpub/{xpub}/utxo/count':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub
+      summary: Get valid utxo count(including confirmed and unconfirmed).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get total utxo count success.
+          content:
+            application/json:
+              schema:
+                type: integer
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
   '/xpub/{xpub}/txs':
     get:
       security:
