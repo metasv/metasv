@@ -144,6 +144,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: showScript
+          in: query
+          description: Return source script code or not (default false).
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Get transaction detail success.
