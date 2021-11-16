@@ -184,6 +184,30 @@ paths:
         '404':
           description: Transaction not found
 
+  '/tx/{txid}/seen':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tx
+      summary: Whether MetaSV have seen this tx before. This is a fast approach to know if the tx exist or not.
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Return true if the transaction is found.
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Transaction not found.
+
   '/tx/broadcast':
     post:
       security:
