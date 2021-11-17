@@ -1080,6 +1080,42 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/user/traffic':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Get traffic details for every hour(valid in six months).
+      description: Return hourly summed outbound traffic bytes.
+      parameters:
+        - name: startTime
+          in: query
+          description: define start query time(unix timestamp)
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: endTime
+          in: query
+          description: define end query time(unix timestamp)
+          required: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Get hourly traffic success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 50
+                items:
+                  $ref: '#/components/schemas/UserHourlyTraffic'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
 
 components:
   securitySchemes:
@@ -1868,3 +1904,17 @@ components:
         flag:
           description: Paging flag, format blockTimestamp_blockIndex
           type: string
+
+    UserHourlyTraffic:
+      description: Summed outbound traffic within particular hour.
+      type: object
+      properties:
+        hourTime:
+          description: The unix timestamp of the beginning of the hour.
+          type: integer
+          format: int64
+        hourTimeString:
+          description: Parsed utc time string for readability.
+          type: string
+        totalBytes:
+          description: Total outbound bytes within this hour
