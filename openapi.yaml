@@ -1918,3 +1918,5 @@ components:
           type: string
         totalBytes:
           description: Total outbound bytes within this hour
+          type: integer
+          format: int64
