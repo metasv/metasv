@@ -1116,6 +1116,25 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/user/traffic/sum':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - user
+      summary: Sum all traffic in the current month.
+      description: Return  summed outbound traffic bytes in current month.
+      responses:
+        '200':
+          description: Get hourly traffic success.
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
 
 components:
   securitySchemes:
