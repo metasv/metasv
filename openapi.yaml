@@ -1130,8 +1130,7 @@ paths:
           content:
             application/json:
               schema:
-                type: integer
-                format: int64
+                $ref: '#/components/schemas/UserTrafficSum'
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
@@ -1937,5 +1936,18 @@ components:
           type: string
         totalBytes:
           description: Total outbound bytes within this hour
+          type: integer
+          format: int64
+
+    UserTrafficSum:
+      description: Summed outbound traffic for this month and lastMonth.
+      type: object
+      properties:
+        thisMonth:
+          description: Summed traffic for currentMonth.
+          type: integer
+          format: int64
+        lastMonth:
+          description: Summed traffic for lastMonth.
           type: integer
           format: int64
