@@ -287,33 +287,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/OutputInfo'
 
-  '/vin/{txid}':
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - outpoint
-        - tx
-      summary: Get all output point of vins in the tx(no longer than one month).
-      description: Search output points by spent txid. Use this api to get detailed inputs for the tx. (Premium feature will support full history)
-      parameters:
-        - name: txid
-          in: path
-          description: The txid of the vins
-          required: true
-          schema:
-            type: string
-
-      responses:
-        '200':
-          description: Get vin list success.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/OutputInfo'
-
   '/vin/{txid}/detail':
     get:
       security:
