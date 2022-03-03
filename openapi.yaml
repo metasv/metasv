@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: MetaSV API Spec
   description: API definition for MetaSV provided apis
-  version: 2.1.0
+  version: 2.1.1
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
@@ -804,6 +804,20 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: max
+          in: query
+          description: Token index not bigger than this(include this).
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: min
+          in: query
+          description: Token index not less than this(include this).
+          required: false
+          schema:
+            type: integer
+            format: int64
       responses:
         '200':
           description: Get sensible nft utxo success.
@@ -884,6 +898,20 @@ paths:
         - name: tokenIndex
           in: query
           description: Find exact token Index.
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: max
+          in: query
+          description: Token index not bigger than this(include this).
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: min
+          in: query
+          description: Token index not less than this(include this).
           required: false
           schema:
             type: integer
