@@ -532,7 +532,7 @@ paths:
         - bearerAuth: [ ]
       tags:
         - xpub
-      summary: Get xpub utxos by specific xpub(300 per page).
+      summary: Get xpub utxos by specific xpub.
       parameters:
         - name: xpub
           in: path
@@ -542,7 +542,7 @@ paths:
             type: string
         - name: limit
           in: query
-          description: The max items returned in this query(default 300), not bigger than 500.
+          description: The max items returned in this query(default 300), not bigger than 5000.
           required: false
           schema:
             type: integer
@@ -648,6 +648,95 @@ paths:
           $ref: '#/components/schemas/UnauthorizedError'
         '404':
           description: Address not found in the xpub.
+
+  '/xpubLite/{xpub}/utxo':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub
+      summary: Get xpub utxos by specific xpub(300 per page).
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The max items returned in this query(default 300), not bigger than 5000.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Get xpub utxos success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 300
+                items:
+                  $ref: '#/components/schemas/XpubUtxo'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
+  '/xpubLite/{xpub}/address/{address}':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub
+      summary: Get xpub address type and index. Only index under /0/70 /1/30 is valid. Otherwise not found.
+      parameters:
+        - name: xpub
+          in: path
+          description: the requested xpub
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub address success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubAddress'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+        '404':
+          description: Address not found in the xpub.
+  '/xpubLite/{xpub}/balance':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - xpub
+      summary: Get xpub balances including confirmed and unconfirmed.
+      description: This api returns confirmed balance(same as address balance), not sumed utxos.
+      parameters:
+        - name: xpub
+          in: path
+          description: the xpub to search
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get xpub balance success.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XpubLiteBalance'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
 
   '/sensible/ft/address/{address}/utxo':
     get:
@@ -1566,6 +1655,15 @@ components:
           format: int64
         unconfirmed:
           description: unconfirmed balance
+          type: integer
+          format: int64
+
+    XpubLiteBalance:
+      description: Balance for xpub lite wallet
+      type: object
+      properties:
+        balance:
+          description: confirmed balance plus unconfirmed balance
           type: integer
           format: int64
 
