@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: MetaSV API Spec
   description: API definition for MetaSV provided apis
-  version: 2.1.1
+  version: 2.1.2
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
@@ -822,6 +822,43 @@ paths:
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
 
+  '/sensible/ft/address/{address}/balance/confirmed':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sensible
+      summary: Get all sensible token balances for specific address ignoring all unconfirmed txs.
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: codeHash
+          in: query
+          description: Filter by contract code hash
+          required: true
+          schema:
+            type: string
+        - name: genesis
+          in: query
+          description: Filter by contract genesis
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get sensible ft balances succes（ingore unconfirmed txs）.
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+
   '/sensible/nft/address/{address}/utxo':
     get:
       security:
@@ -864,6 +901,41 @@ paths:
                 maxItems: 300
                 items:
                   $ref: '#/components/schemas/SensibleNftUtxo'
+        '401':
+          $ref: '#/components/schemas/UnauthorizedError'
+  '/sensible/nft/address/{address}/count/confirmed':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - sensible
+      summary: Get confirmed utxo count for specific nft(ignore all unconfirmed txs).
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: codeHash
+          in: query
+          description: Filter by contract code hash
+          required: true
+          schema:
+            type: string
+        - name: genesis
+          in: query
+          description: Filter by contract genesis
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get sensible nft utxo success.
+          content:
+            application/json:
+              schema:
+                type: integer
         '401':
           $ref: '#/components/schemas/UnauthorizedError'
   '/sensible/nft/genesis/{codeHash}/{genesis}/utxo':
