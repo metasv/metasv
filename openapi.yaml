@@ -203,6 +203,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BroadcastResult'
+  '/tx/broadcast/async':
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tx
+      summary: Broadcast tx to metasv asyn(tx size no bigger than 250K).
+      description: This api will not broadcast to metasv fullnode directly, the tx will be cached and later send to fullnode.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TxRaw'
+      responses:
+        '201':
+          description: Acknowledged. txid returned dsha256(rawHex).
+          content:
+            application/json:
+              schema:
+                type: string
+  '/tx/broadcast/async/{txid}/state':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - tx
+      summary: Query aync broadcast result.
+      description: Use this api to query async broadcast status, possible status PENDING, BROADCASTED, INVALID, UNKNOWN
+      parameters:
+        - name: txid
+          in: path
+          description: the request ID to search, txhash
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Acknowledged. txid returned dsha256(rawHex).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncBroadcastResult'
+
 
   '/address/{address}/balance':
     get:
@@ -1509,6 +1552,19 @@ components:
       properties:
         txid:
           description: return txid if broadcast success
+          type: string
+        message:
+          description: return messages if broadcast failed
+          type: string
+    AsyncBroadcastResult:
+      type: object
+      description: Broadcast result
+      properties:
+        txid:
+          description: the txid of this tx
+          type: string
+        state:
+          description: the state of this tx, possible values PENDING, BROADCASTED, INVALID, UNKNOWN
           type: string
         message:
           description: return messages if broadcast failed
