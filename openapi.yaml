@@ -335,7 +335,6 @@ paths:
       security:
         - bearerAuth: [ ]
       tags:
-        - outpoint
         - tx
       summary: Get all output point of vins in the tx with detailed output script.
       description: Search output points by spent txid. Use this api to get detailed inputs for the tx.
