@@ -30,6 +30,16 @@ You can use openapi generator to generate the client sdk for your project, choos
 
 https://openapi-generator.tech/docs/generators#client-generators
 
+You can also use the following sdks directly
+
+### Java
+
+https://github.com/metasv/metasv-java-sdk
+
+### Go
+
+https://github.com/metasv/metasv-go-sdk
+
 ## Update Logs
 
 ### V2.0.1
