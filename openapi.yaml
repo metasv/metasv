@@ -927,6 +927,12 @@ paths:
           required: false
           schema:
             type: string
+        - name: limit
+          in: query
+          description: Limit the return count(no more than 300)
+          required: false
+          schema:
+            type: integer
         - name: flag
           in: query
           description: The flag of the last query Item(Paging flag)
