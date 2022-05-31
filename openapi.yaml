@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: MetaSV API Spec
   description: API definition for MetaSV provided apis
-  version: 2.1.4
+  version: 2.1.7
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
@@ -299,6 +299,43 @@ paths:
                 maxItems: 100
                 items:
                   $ref: '#/components/schemas/AddressUtxo'
+
+  '/address/{address}/tx':
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - address
+      summary: Get address history by specific address(recent 10 days available).
+      parameters:
+        - name: address
+          in: path
+          description: the requested address
+          required: true
+          schema:
+            type: string
+        - name: flag
+          in: query
+          description: The last id of the last query(Paging flag)
+          required: false
+          schema:
+            type: string
+        - name: confirmed
+          in: query
+          description: (default true) fetch confirmed tx, fetch unconfirmed tx if false
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Get address transaction history success.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 100
+                items:
+                  $ref: '#/components/schemas/AddressTx'
 
 
   '/outpoint/{txid}/{index}':
